@@ -1,0 +1,17 @@
+{
+  "root": true,
+  "ignorePatterns": ["node_modules"],
+  "overrides": [
+    {
+      "files": ["*.js"],
+      "extends": ["plugin:eslint/recommended", "plugin:prettier/recommended"],
+      "rules": {
+        "max-len": "off",
+        "no-underscore-dangle": "warn",
+        "arrow-body-style": "error",
+        "no-unused-vars": "warn",
+        "jsdoc/newline-after-description": "off"
+      }
+    }
+  ]
+}

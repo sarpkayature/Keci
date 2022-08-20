@@ -1,0 +1,32 @@
+{
+  "name": "keci",
+  "version": "1.0.0",
+  "description": "Keci Application for everyone",
+  "main": "src/app.js",
+  "type": "module",
+  "private": true,
+  "scripts": {
+    "start": "nodemon"
+  },
+  "author": "sarpkayature",
+  "license": "MIT",
+  "devDependencies": {
+    "@babel/core": "^7.18.10",
+    "@babel/node": "^7.18.10",
+    "@babel/preset-env": "^7.18.10",
+    "eslint-config-prettier": "^8.5.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "prettier": "^2.7.1"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.1",
+    "body-parser": "^1.20.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.0.1",
+    "express": "^4.18.1",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^6.5.2",
+    "morgan": "^1.10.0",
+    "nodemon": "^2.0.19"
+  }
+}
