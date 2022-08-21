@@ -29,6 +29,7 @@ const createUser = async (req, res) => {
         });
         newUser.save((err, user) => {
           if (err) {
+            console.log(err);
             res
               .status(500)
               .send({ status: 500, message: 'Something went wrong' });
