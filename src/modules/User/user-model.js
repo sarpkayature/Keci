@@ -34,18 +34,6 @@ UserRegisterSchema.pre('save', function (next) {
   });
 });
 
-UserRegisterSchema.methods.comparePassword = function (
-  candidatePassword,
-  cb
-) {
-  bcryptjs
-    .compare(candidatePassword, this.password, (err, isMatch) => {
-      if (err) return cb(err);
-      cb(null, isMatch);
-    })
-    .catch(err => cb(err));
-};
-
 const UserRegister = mongoose.model('User', UserRegisterSchema);
 
 export default UserRegister;
