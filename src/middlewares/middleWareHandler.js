@@ -1,7 +1,8 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import morgan from 'morgan';
-import { expressjwt } from 'express-jwt';
+import { verifyToken } from './verifyToken.js';
+
 const Logger = morgan('dev');
 
 const Cors = cors({
@@ -10,11 +11,4 @@ const Cors = cors({
 
 const BParser = bodyParser.json();
 
-const JWT = expressjwt({
-  secret: process.env.JWT_SECRET,
-  algorithms: ['HS512'],
-}).unless({
-  path: ['/api/v1/login', '/api/v1/register'],
-});
-
-export const middleWares = [BParser, Cors, Logger];
+export const middleWares = [BParser, Cors, Logger, verifyToken];
