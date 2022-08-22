@@ -1,7 +1,6 @@
 import bodyParser from 'body-parser';
 import cors from 'cors';
 import morgan from 'morgan';
-import { verifyToken } from './verifyToken.js';
 
 const Logger = morgan('dev');
 
@@ -11,4 +10,4 @@ const Cors = cors({
 
 const BParser = bodyParser.json();
 
-export const middleWares = [BParser, Cors, Logger, verifyToken];
+export const middleWares = [BParser, Cors, Logger];

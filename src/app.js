@@ -2,7 +2,11 @@ import express from 'express';
 import mongoose from 'mongoose';
 import { mongoUri, port } from './config/credentials.js';
 import { middleWares } from './middlewares/middleWareHandler.js';
-import appRoutes from './middlewares/router-bundler.js';
+import { verifyToken } from './middlewares/verifyToken.js';
+import {
+  privateRoutes,
+  publicRoutes,
+} from './middlewares/router-bundler.js';
 
 const app = express();
 
@@ -13,7 +17,8 @@ mongoose.connection.on('connected', () => {
 });
 
 middleWares.forEach(middleware => app.use(middleware));
-appRoutes.forEach(route => app.use('/api/v1', route));
+publicRoutes.forEach(route => app.use('/api/v1', route));
+privateRoutes.forEach(route => app.use('/api/v1', verifyToken, route));
 
 app.listen(port, () => {
   console.log(`App listens port ${port}`);
@@ -22,7 +27,7 @@ app.listen(port, () => {
 process.on('unhandledRejection', err => {
   console.log('UNHANDLED REJECTION! 💥 💩 💥 💩💥  Shutting down...');
   console.log(err.name, err.message);
-  server.close(() => {
+  mongoose.close(() => {
     process.exit(1);
   });
 });
