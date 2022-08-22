@@ -2,18 +2,27 @@ import express from 'express';
 import mongoose from 'mongoose';
 import { mongoUri, port } from './config/credentials.js';
 import { middleWares } from './middlewares/middleWareHandler.js';
+import appRoutes from './middlewares/router-bundler.js';
 
 const app = express();
 
-middleWares.forEach(middleware => app.use(middleware));
+mongoose.connect(mongoUri, { useNewUrlParser: true });
 
-mongoose.connect(mongoUri, { useNewUrlParser: true }, err => {
-  if (err) console.log(err);
-  else {
-    console.log('Connected to MongoDB');
-  }
+mongoose.connection.on('connected', () => {
+  console.log('Connected DB Successfully 👍 😍 👍 😍 👍 😍 👍 ');
 });
 
+middleWares.forEach(middleware => app.use(middleware));
+appRoutes.forEach(route => app.use('/api/v1', route));
+
 app.listen(port, () => {
-  console.log('listening on port 8080');
+  console.log(`App listens port ${port}`);
+});
+
+process.on('unhandledRejection', err => {
+  console.log('UNHANDLED REJECTION! 💥 💩 💥 💩💥  Shutting down...');
+  console.log(err.name, err.message);
+  server.close(() => {
+    process.exit(1);
+  });
 });
