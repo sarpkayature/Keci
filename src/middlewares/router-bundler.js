@@ -1,5 +1,7 @@
 import userRouter from '../modules/User/user-router.js';
+import authRouter from '../modules/Auth/auth-router.js';
 
-const appRoutes = [userRouter];
+const privateRoutes = [userRouter];
+const publicRoutes = [authRouter];
 
-export default appRoutes;
+export { privateRoutes, publicRoutes };
