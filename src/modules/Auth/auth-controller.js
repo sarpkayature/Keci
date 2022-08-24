@@ -35,11 +35,16 @@ const createUser = async (req, res) => {
               .status(500)
               .send({ status: 500, message: 'Something went wrong' });
           } else {
+            const { _id: id, name, email } = user;
             res.status(201).send({
               status: 201,
               message: 'User created successfully',
               payload: {
-                user: user,
+                user: {
+                  id,
+                  name,
+                  email,
+                },
                 credentials: {
                   tokenType: 'Bearer',
                   accessToken: JWT.sign(
@@ -48,6 +53,14 @@ const createUser = async (req, res) => {
                     {
                       algorithm: process.env.JWT_ALGORITHM,
                       expiresIn: '6h',
+                    }
+                  ),
+                  refreshToken: JWT.sign(
+                    { user: user },
+                    process.env.JWT_SECRET,
+                    {
+                      algorithm: process.env.JWT_REFRESH_ALGORITHM,
+                      expiresIn: '1d',
                     }
                   ),
                 },
@@ -77,21 +90,30 @@ const loginUser = async (req, res) => {
         if (!user) {
           res.status(400).send({ message: 'User not found' });
         } else {
+          const { _id: id, name, email } = user;
           const compare = bcryptjs.compareSync(password, user.password);
           if (compare) {
             res.status(200).send({
               status: 200,
               message: 'User logged in successfully',
               payload: {
-                user: user,
+                user: {
+                  id,
+                  name,
+                  email,
+                },
                 credentials: {
                   tokenType: 'Bearer',
-                  accessToken: JWT.sign(
+                  accessToken: JWT.sign({ user }, process.env.JWT_SECRET, {
+                    algorithm: process.env.JWT_ALGORITHM,
+                    expiresIn: '6h',
+                  }),
+                  refreshToken: JWT.sign(
                     { user: user },
                     process.env.JWT_SECRET,
                     {
-                      algorithm: process.env.JWT_ALGORITHM,
-                      expiresIn: '6h',
+                      algorithm: process.env.JWT_REFRESH_ALGORITHM,
+                      expiresIn: '1d',
                     }
                   ),
                 },
@@ -112,4 +134,54 @@ const loginUser = async (req, res) => {
   }
 };
 
-export { createUser, loginUser };
+const refreshToken = async (req, res) => {
+  const { refreshToken } = req.body;
+  if (!refreshToken) {
+    res.status(401).send({ message: 'Refresh token not found' });
+  } else {
+    await JWT.verify(
+      refreshToken,
+      process.env.JWT_SECRET,
+      { algorithm: process.env.JWT_ALGORITHM },
+      (err, user) => {
+        if (err) {
+          res.status(403).send({ message: 'Invalid refresh token' });
+        } else {
+          const { _id: id, name, email } = user;
+          res.status(200).send({
+            status: 200,
+            message: 'Token refreshed successfully',
+            payload: {
+              user: {
+                id,
+                name,
+                email,
+              },
+              credentials: {
+                tokenType: 'Bearer',
+                accessToken: JWT.sign(
+                  { user: user },
+                  process.env.JWT_SECRET,
+                  {
+                    algorithm: process.env.JWT_ALGORITHM,
+                    expiresIn: '6h',
+                  }
+                ),
+                refreshToken: JWT.sign(
+                  { user: user },
+                  process.env.JWT_SECRET,
+                  {
+                    algorithm: process.env.JWT_ALGORITHM,
+                    expiresIn: '1d',
+                  }
+                ),
+              },
+            },
+          });
+        }
+      }
+    );
+  }
+};
+
+export { createUser, loginUser, refreshToken };
