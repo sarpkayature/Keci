@@ -151,7 +151,7 @@ dmypy.json
 
 ### PyCharm ###
 *.pyc
-#.idea/
+.idea/
 
 # Vim
 *.swp
