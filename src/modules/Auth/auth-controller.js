@@ -1,4 +1,4 @@
-import UserRegister from '../User/user-model.js';
+import UserRegister from '../User/models/user-model.js';
 import { v4 as uuidv4 } from 'uuid';
 import bcryptjs from 'bcryptjs';
 import jsonwebtoken from 'jsonwebtoken';
